@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.springframework.org/schema/beans">
+<head>
+    <meta charset="UTF-8">
+    <!--为了确保适当的绘制和触屏缩放,需要在<head>之中添加viewport元数据标签-->
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header"  th:content="${_csrf.headerName}"/>
+    <!--加载选项卡容器，默认加载第一个页面为"文档页"-->
+    <script type="text/javascript" src="myself/js/jquery-3.1.1.min.js"></script>
+    <script type="text/javascript" src="myself/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="myself/easyui/themes/gray/easyui.css">
+    <link rel="stylesheet" type="text/css" href="myself/easyui/themes/icon.css">
+    <link rel="stylesheet" type="text/css" href="myself/easyui/ext-icons/ext_icons.css">
+    <script type="text/javascript" src="myself/easyui/jquery.easyui.min.js"></script>
+    <script src="myself/easyui/locale/easyui-lang-zh_CN.js"></script>
+
+    <link rel="stylesheet" href="myself/css/bootstrap.min.css">
+
+    <script type="text/javascript" src="myself/js/first_show.js"></script>
+    <link rel="stylesheet" href="myself/css/first.css">
+    <!--layer-->
+    <script src="myself/layer/layer.js"></script>
+    <!--tree-->
+    <link rel="stylesheet" href="myself/css/bootstrap-treeview.css">
+    <script type="text/javascript" src="myself/js/bootstrap-treeview.js"></script>
+    <script type="text/javascript" src="myself/js/myTree.js"></script>
+    <!--解决错误-->
+    <link rel="stylesheet" href="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/css/bootstrap.min.css">
+    <!--引入select2-->
+    <link href="myself/select2/select2.min.css" rel="stylesheet" type="text/css"/>
+    <script type="text/javascript" src="myself/select2/select2.min.js"></script>
+    <title>设置</title>
+</head>
+<body id="d_body">
+    <div>
+        <!--列表设置-->
+        <div id="tdiv">
+            <p id="li2" style="margin-left: 39px;">tree调整</p>
+
+            <div id="rt">
+                <ul id="treeview" class="filetree" style="margin-right: 39px;font-weight: bold;">
+                    <li></li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="md_show">
+            <ul id="ul1">
+                <li id="li1">已存在的文件</li>
+            </ul>
+        </div>
+    </div>
+</body>
+
+</html>

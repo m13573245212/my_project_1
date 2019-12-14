@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml" style="height:100%;width:100%;overflow:hidden;">
+<head>
+    <meta charset="UTF-8">
+    <!--为了确保适当的绘制和触屏缩放,需要在<head>之中添加viewport元数据标签-->
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header"  th:content="${_csrf.headerName}"/>
+    <link rel="shortcut icon" type="image/x-jpg" href="myself/img/head.jpg"/>
+    <!--加载选项卡容器，默认加载第一个页面为"文档页"-->
+    <script type="text/javascript" src="myself/js/jquery-3.1.1.min.js"></script>
+    <script type="text/javascript" src="myself/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="myself/js/jquery.dataTables.js"></script>
+    <script type="text/javascript" src="myself/js/User.js"></script>
+    <link rel="stylesheet" type="text/css" href="myself/easyui/themes/gray/easyui.css">
+    <link rel="stylesheet" type="text/css" href="myself/easyui/themes/icon.css">
+    <link rel="stylesheet" type="text/css" href="myself/easyui/ext-icons/ext_icons.css">
+    <script type="text/javascript" src="myself/easyui/jquery.easyui.min.js"></script>
+    <script src="myself/easyui/locale/easyui-lang-zh_CN.js"></script>
+
+    <link rel="stylesheet" href="myself/css/bootstrap.min.css">
+
+    <script type="text/javascript" src="myself/js/first.js"></script>
+    <link rel="stylesheet" href="myself/css/first.css">
+    <link rel="stylesheet" href="myself/css/jquery.dataTables.css">
+    <script type="text/javascript" src="myself/js/public.js"></script>
+    <!--引入layer-->
+    <script src="myself/layer/layer.js"></script>
+    <title>首页</title>
+</head>
+<body class="container-fluid">
+<div class="row">
+    <!--导航栏-->
+    <div id="DaoHangMenu" class="col-lg-1 col-xs-1">
+
+    </div>
+
+    <!--需要一个选项卡容器-->
+    <div class="easyui-tabs h-container col-lg-11 col-xs-11" id="main_tab">
+        <div title="文档" style="padding: 10px" id="d_body">
+            <div class="container-fluid">
+                <div id="head" class="row">
+                    <div class="col-lg-1 col-xs-2"><a data-toggle="modal" data-target="#myModal" id="log_ico">登录</a></div>
+                    <div class="col-lg-1 col-xs-2"><a data-toggle="modal" data-target="#myModal2" id="reg_ico">注册</a></div>
+                    <!--<input type="button" style="float: left;" value="工具" onclick="hide_daohang()">-->
+                    <div id="search" class="col-lg-10 col-xs-8">
+                        <form id="form1">
+                            <input id="search_input_text" type="text" class="search_text" name="search" placeholder="搜索框">
+                            <img src="myself/img/search.png" onclick="search_local();" id="image_search">
+                        </form>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div id="md" class="col-lg-2 col-xs-12">
+                        <ul id="ul1">
+                            <li id="li1">查看文件</li>
+                        </ul>
+                    </div>
+
+                    <div class="col-lg-4 col-xs-12" id="table_myself">
+                        <table id="table_id_example">
+                            <thead>
+                            <tr>
+                                <th>编号</th>
+                                <th>主文件名</th>
+                                <th>文件描述</th>
+                                <th>图片</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+
+                            </tbody>
+                        </table>
+                    </div>
+                    <div id="upload" class="col-lg-4 col-xs-12">
+                        <p>
+                            <input id="fileUpload" type="file" name="file">
+                        </p>
+                        <input id="uploadButton" type="button" value="上传主要文件" onclick="upload_local()">
+
+                        <span class="text-info" id="text_info"> </span>
+                        <span class="text_count" id="text_count"> </span>
+
+                        <p><!--单纯占个位置--></p>
+                        <form id="describe_form">
+                            <p>
+                                <input name="fileName" type="text" id="describe_fileName" placeholder="请输入主文件名">
+                                <input type="button" onclick="f_showDescribe();" value="查看描述"/>
+                            </p>
+                            <p id="describe">
+                                文件描述:<span th:text="${describe}"></span>
+                            </p>
+                            <p>
+                                <input name="describe_file" type="text" id="describe_describe" placeholder="请输入新描述">
+                                <input type="button" onclick="f_updateDescribe();" value="修改描述"/>
+                            </p>
+                        </form>
+                        <br/>
+                        <br/>
+                        <p>
+                            <input id="master" name="master" type="text" placeholder="请输入主文件名">
+                        </p>
+                        <p>
+                            <input id="fileUpload2" type="file" name="file_pictures" multiple="multiple">
+                        </p>
+
+                        <input id="uploadButton2" type="button" value="上传从属文件" onclick="upload_local_picture()">
+                        <p id="pictures_result">
+                            <!--动态生成区域,显示每一个上传图片的上传结果-->
+                            <!--特殊需要:每一个图片,成功为绿色,失败为红色,拒绝为蓝色-->
+                            <!--<span id="text_info2"> </span>-->
+                            <!--<span id="text_count2"> </span>-->
+                        </p>
+
+
+                    </div>
+
+                </div>
+
+                <!--设置登录模态框-->
+                <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                                <h4 class="modal-title" id="myModalLabel">登录界面</h4>
+                            </div>
+                            <form method="post" role="form" class="form-inline">
+                                <br/>
+                                &nbsp;&nbsp;&nbsp;<label class="label label-info" for="userName">账号:</label>
+                                <input class="form-control" type="text" name="userName" id="userName">
+                                &nbsp;&nbsp;&nbsp;<label class="label label-info" for="password">密码:</label>
+                                <input class="form-control" type="password" name="password" id="password">
+                                <div class="modal-body" id="information_login"></div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-default" data-dismiss="modal" id="login_close">关闭
+                                    </button>
+                                    <button type="button" class="btn btn-primary" id="user_login">登录</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <!--设置注册模态框-->
+                <div class="modal fade" id="myModal2" tabindex="-1" role="dialog" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                                <h4 class="modal-title" id="myModalLabel2">注册界面</h4>
+                            </div>
+                            <form method="post" role="form" class="form-inline">
+                                <br/>
+                                &nbsp;&nbsp;&nbsp;<label class="label label-info" for="userName">账号:</label>
+                                <input class="form-control" type="text" name="userName" id="userName_reg">
+                                <span id="reg_checkUserName_information"></span>
+                                <br/>
+                                <br/>
+                                &nbsp;&nbsp;&nbsp;<label class="label label-info" for="password">密码:</label>
+                                <input class="form-control" type="password" name="password" id="password_reg">
+                                <span id="reg_password_information"></span>
+                                <br/>
+                                <br/>
+                                &nbsp;&nbsp;&nbsp;<label class="label label-info" for="password">确认密码:</label>
+                                <input class="form-control" type="password" name="password" id="password_reg_confirm">
+                                <span id="reg_password_confirm_information"></span>
+                                <br/>
+                                <br/>
+                                <p id="reg_result">
+                                    &nbsp;&nbsp;&nbsp;
+                                </p>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                                    <button type="button" class="btn btn-primary" id="user_reg">注册</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <!--设置图片集模态框-->
+                <div class="modal fade" id="myModal3" tabindex="-1" role="dialog" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                                <h4 class="modal-title" id="myModalLabel3"></h4>
+                            </div>
+                            <table id="table_pictures" class="display">
+                                <thead>
+                                <tr>
+                                    <th>编号</th>
+                                    <th>图片名</th>
+                                    <th>操作</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+
+                                </tbody>
+
+                            </table>
+
+                        </div>
+                    </div>
+                </div>
+
+                <!--设置二层模态用以显示图片-->
+                <div class="modal fade" id="myModal4" tabindex="-1" role="dialog" aria-hidden="true">
+                    <div class="modal-dialog" id="picture_area">
+                        <!--这里加载图片-->
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+</body>
+</html>

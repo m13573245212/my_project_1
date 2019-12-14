@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <!--为了确保适当的绘制和触屏缩放,需要在<head>之中添加viewport元数据标签-->
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header"  th:content="${_csrf.headerName}"/>
+    <link rel="stylesheet" href="myself/css/bootstrap.min.css">
+    <link rel="stylesheet" href="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script type="text/javascript" src="myself/js/jquery-3.1.1.min.js"></script>
+    <script type="text/javascript" src="myself/js/bootstrap.min.js"></script>
+    <!--树形图加载-->
+    <link rel="stylesheet" href="myself/css/bootstrap-treeview.css">
+    <script type="text/javascript" src="myself/js/bootstrap-treeview.js"></script>
+    <!--easyui-->
+    <link rel="stylesheet" type="text/css" href="myself/easyui/themes/gray/easyui.css">
+    <link rel="stylesheet" type="text/css" href="myself/easyui/themes/icon.css">
+    <link rel="stylesheet" type="text/css" href="myself/easyui/ext-icons/ext_icons.css">
+    <script type="text/javascript" src="myself/easyui/jquery.easyui.min.js"></script>
+    <script src="myself/easyui/locale/easyui-lang-zh_CN.js"></script>
+    <!--引入layer-->
+    <script src="myself/layer/layer.js"></script>
+    <title>注入</title>
+    <style>
+        /*设置加载路径的输入框*/
+        #source_file {
+            margin-left: -10px;
+            width: 533px;
+            height: 40px;
+            font-size: 18px;
+        }
+
+        /*输入框旁边的按钮*/
+        #source_file_button {
+            height: 40px;
+            margin-top: 3px;
+            padding-top: 4px;
+        }
+
+        /*设置tree的宽度*/
+        #tree_mother {
+            width: 623px;
+            margin-top: 10px;
+            margin-left: -52px;
+        }
+
+        /*信息展示部分*/
+        .show_text {
+            font-size: 18px;
+        }
+
+        /*调整布局*/
+        .panel {
+            position: absolute;
+        }
+        .panel-htop{
+            margin-left: -48px;
+        }
+    </style>
+</head>
+<body>
+<div class="container-fluid">
+    <!--用于暂存文件地址,在图片上传的时候有用-->
+    <input type="hidden" id="sou"/>
+
+
+    <lable class="show_text">-当前展示的目录：</lable>
+    <p th:text="${path}" class="show_text" id="path"></p>
+    <!--加载目录下的文件结构-->
+    <input type="text" id="source_file" placeholder="输入加载目录">
+    <input type="button" id="source_file_button" onclick="changePath()" value="确定">
+
+    <!--加载目录的树形图-->
+    <div id="tree_mother">
+        <ul id="treeview" class="filetree">
+            <li></li>
+        </ul>
+    </div>
+    <!--预览选中的节点内容-->
+    <div id="p" style="padding:10px;">
+        <p>panel content.</p>
+        <p>panel content.</p>
+    </div>
+
+</div>
+</body>
+<script th:inline="javascript">
+
+    //创建一个数组储存节点内容
+    var arr=new Array();
+    //创建的变量用于暂存文件路径,用于添加文件到主目录时使用
+    var another="";
+    //接收tree的数据
+    var y = [[${data}]];
+    var tr = eval(y);
+    $("#treeview").treeview({
+        data: tr,
+        levels: 2,// 展开层级
+        onNodeSelected: function (event,node) {
+            arr.push(node.text);
+            //将选中节点的所有父节点装进数组
+            checkAllNodes(node);
+            //把集合里的元素拼成路径,从后往前拼接,还需要加上路径的前缀
+            var prefix=$("#path").text();
+            var finallyStr=prefix;
+            if(arr.length>1){
+                for(var i=arr.length-2;i>=0;i--){
+                    //去掉最后一个元素,因为前缀里已经包括
+                    finallyStr=finallyStr+"/"+arr[i];
+                }
+            }
+            // console.log("XXXXXXXXXXXXXXX");
+            // console.log("集合:"+arr);
+            console.log(finallyStr);
+            //在这里将文件路径保存到暂存变量中
+            another=finallyStr;
+            $("#sou").val(finallyStr);
+            //进行特殊字符的处理
+            finallyStr=charToOk(finallyStr);
+            //进行显示
+            $('#p').panel("refresh","manage/wordHtml?filePath="+finallyStr);
+            //数组使用之后需要清空
+            arr.splice(0,arr.length);
+        }
+    });
+    //初始加载时,执行一次 设置文件夹不可被选中的方法
+    setDir();
+
+    //获取所有节点
+    function getAllNodes(){
+        var treeViewObject = $('#treeview').data('treeview'),
+            allCollapsedNodes = treeViewObject.getCollapsed(),
+            allExpandedNodes = treeViewObject.getExpanded(),
+            allNodes = allCollapsedNodes.concat(allExpandedNodes);
+
+        console.log(allNodes);
+        return allNodes;
+    }
+
+    //将文件夹节点设置为不可选中
+    function setDir(){
+        //所有的节点对象组成的集合
+        var allNodes=getAllNodes();
+
+        for(var i=0;i<allNodes.length;i++){
+            if(allNodes[i].text.indexOf(".")==-1){
+                allNodes[i].selectable=false;
+            }
+        }
+    }
+
+    //加载新的目录
+    function changePath() {
+        var path=$("#source_file").val();
+        $.ajax({
+            url:"manage/newDir.do",
+            data:"path="+path,
+            type:"post",
+            dataType:"text",
+            success:function (obj) {
+                addNew(obj);
+                //将新的路径设置到页面的显示位置
+                $("#path").text(path);
+            }
+        });
+    }
+    function addNew(obj){
+        var a=eval(obj);
+        $("#treeview").treeview({
+            data: a,
+            levels:2,
+            onNodeSelected: function (event,node) {
+                arr.push(node.text);
+                checkAllNodes(node);
+                //把集合里的元素拼成路径,从后往前拼接,还需要加上路径的前缀
+                var prefix=$("#path").text();
+                var finallyStr=prefix;
+                if(arr.length>1){
+                    for(var i=arr.length-2;i>=0;i--){
+                        //去掉最后一个元素,因为前缀里已经包括
+                        finallyStr=finallyStr+"/"+arr[i];
+                    }
+                }
+                console.log("XXXXXXXXXXXXXXX");
+                console.log("集合:"+arr);
+                console.log(finallyStr);
+                //在这里将文件路径保存到暂存变量中
+                another=finallyStr;
+                $("#sou").val(finallyStr);
+                //进行特殊字符的处理
+                finallyStr=charToOk(finallyStr);
+                //进行显示
+                $('#p').panel("refresh","manage/wordHtml?filePath="+finallyStr);
+                //数组使用之后需要清空
+                arr.splice(0,arr.length);
+            }
+        });
+        //重新加载tree之后在执行一次禁用文件夹的方法
+        setDir();
+    }
+    //获取选中节点的所有父节点,通过拼接出文件的真实地址进行展示
+    function checkAllNodes(node){
+
+        var a=$('#treeview').treeview('getParent', node);
+        arr.push(a.text);
+        if(a.nodeId!=0){
+            checkAllNodes(a);
+        }else{
+            return;
+        }
+    }
+
+    //初始化panel
+    $('#p').panel({
+        width: 1070,
+        height: 1000,
+        top: 0,
+        left: 669,
+        title: '预览',
+        tools: [
+            {
+                iconCls: 'icon-add',
+                handler: function () {
+                    // 将当前预览的文件上传
+                    if($("#path").text()=="D:/JAVA/Java相关/upload/md"){
+                        alert("当前已经在主要目录中");
+                    }else{
+                        //不在主目录中,可以进行添加
+                        if(another==""){
+                            another=$("#sou").val();
+                        }
+                        if($("#sou").val().lastIndexOf(".png")!=-1){
+                            alert("图片会自动添加");
+                        }else{
+                            //进行特殊字符的处理
+                            another=charToOk(another);
+                            $.ajax({
+                                url:"manage/upload",
+                                data:"filePath="+another,
+                                type: "get",
+                                dataType:"json",
+                                success: function (obj) {
+                                    alert(obj.message);
+                                }
+                            });
+                            //another使用完毕后立即将其初始化
+                            another="";
+                        }
+                    }
+                }
+            },
+            {
+                iconCls: 'icon-remove',
+                handler: function () {
+                    // 移除
+
+                }
+            },
+            {
+                iconCls: 'icon-edit',
+                handler: function () {
+                    var filePath=$("#sou").val();
+                    if(filePath.indexOf(".png")!=-1){
+                        alert("图片页面禁用该功能");
+                    }else{
+                        //进行特殊字符的处理
+                        filePath=charToOk(filePath);
+                        //自动导入相关图片
+                        $.ajax({
+                            url:"manage/autoUploadPictures",
+                            data:"filePath="+filePath,
+                            type:"post",
+                            dataType:"json",
+                            success: function (rr) {
+                                console.log(rr);
+                                if(rr.state==1){
+                                    //拼接上传成功的文件和失败的文件所需要的字符串
+                                    var s1="新增图片:";
+                                    var s2="失败或已存在图片:";
+                                    if(rr.data.success.length>0){
+                                        for (var i = 0; i < rr.data.success.length; i++) {
+                                            s1=s1+rr.data.success[i]+", ";
+                                        }
+                                    }else{
+                                        s1="";
+                                    }
+                                    if(rr.data.fail.length>0){
+                                        for (var i = 0; i < rr.data.fail.length; i++) {
+                                            //如果是最后一个就不需要逗号了
+                                            if(i==rr.data.fail.length-1){
+                                                s2=s2+rr.data.fail[i];
+                                            }else{
+                                                s2=s2+rr.data.fail[i]+", ";
+                                            }
+                                        }
+                                    }else{
+                                        s2="";
+                                    }
+                                    if(s1!=""){
+                                        s1+="</br>"
+                                    }
+                                    layer.alert(rr.message+",</br>"+s1+s2);
+                                }else{
+                                    layer.alert(rr.message);
+                                }
+                            }
+                        });
+                    }
+                }
+            }
+        ]
+    });
+
+    //panel加载链接
+    $('#p').panel({
+        href: 'manage/wordHtml',
+        onLoad: function () {
+        }
+    });
+
+    //对特殊字符进行处理
+    function charToOk(s){
+        s=s.replace(/\%/g,"%25");
+        s=s.replace(/\#/g,"%23");
+        s=s.replace(/\&/g,"%26");
+        s=s.replace(/\ /g,"%20");
+        s=s.replace(/\+/g,"%2B");
+        s=s.replace(/\//g,"%2F");
+        s=s.replace(/\?/g,"%3F");
+        s=s.replace(/\=/g,"%3D");
+        return s;
+    }
+</script>
+</html>

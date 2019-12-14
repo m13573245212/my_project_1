@@ -1,0 +1,27 @@
+<script type="text/javascript">
+    window.onload=function(){
+        var a=document.createElement("a");
+        a.innerHTML="下载该文件";
+        var u="老徐最帅";
+        u=charToOk(u);
+        var url="../yyy/download.do?fileName="+u;
+        a.setAttribute("href",url);
+        a.setAttribute("id","down_button");
+        var body=document.getElementsByTagName("body");
+        console.log(body);
+        body[0].appendChild(a);
+    }
+
+    //进行特殊字符处理
+    function charToOk(s){
+        s=s.replace(/\%/g,"%25");
+        s=s.replace(/\#/g,"%23");
+        s=s.replace(/\&/g,"%26");
+        s=s.replace(/\ /g,"%20");
+        s=s.replace(/\+/g,"%2B");
+        s=s.replace(/\//g,"%2F");
+        s=s.replace(/\?/g,"%3F");
+        s=s.replace(/\=/g,"%3D");
+        return s;
+    }
+</script>

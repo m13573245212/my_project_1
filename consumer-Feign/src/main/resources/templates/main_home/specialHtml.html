@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.springframework.org/schema/beans">
+<head>
+    <meta charset="UTF-8">
+    <!--为了确保适当的绘制和触屏缩放,需要在<head>之中添加viewport元数据标签-->
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header"  th:content="${_csrf.headerName}"/>
+    <script type="text/javascript" src="myself/js/jquery-3.1.1.min.js"></script>
+    <script type="text/javascript" src="myself/js/bootstrap.min.js"></script>
+    <!--tree-->
+    <link rel="stylesheet" href="myself/css/bootstrap-treeview.css">
+    <link rel="stylesheet" href="myself/css/bootstrap.min.css">
+    <!--解决错误-->
+    <link rel="stylesheet" href="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script type="text/javascript" src="myself/js/bootstrap-treeview.js"></script>
+    <title>展示</title>
+</head>
+<body>
+    <!--列表设置-->
+    <div id="tdiv">
+
+        <div id="rt">
+            <ul id="treeview" class="filetree" style="margin-right: 39px;font-weight: bold;">
+                <li></li>
+            </ul>
+        </div>
+    </div>
+</body>
+<script type="text/javascript">
+    //加载tree
+    $(function(){
+        //向后台请求加载tree
+        $.ajax({
+            url:"zhan/tree",
+            type:"get",
+            dataType:"text",
+            success: function (obj) {
+                var t=eval(obj);
+                $("#treeview").treeview({
+                    data: t,
+                    levels: 3,
+                    color: "#428bca",
+                    onNodeSelected: function (event,node) {
+                        if(node.href){
+                            window.open("http://"+window.location.host+"/yyy/"+"look.do?fileName="+node.href);
+                        }
+                    }
+                });
+            }
+        });
+    });
+</script>
+</html>

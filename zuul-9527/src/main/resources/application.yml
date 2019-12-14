@@ -1,0 +1,27 @@
+server:
+  port: 9527
+spring:
+  application:
+    name: zuul-gateway-9527
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://eureka7001.com:7001/eureka,http://eureka7002.com:7002/eureka,http://eureka7003.com:7003/eureka
+  instance:
+    instance-id: gateway-9527.com
+    prefer-ip-address: true
+
+info:
+  app.name: MyCloud
+  company.name: xlf
+  build.artifactId: '@project.artifactId@'
+  build.version: '@project.version@'
+
+zuul:
+  prefix: /xlf
+  routes:
+    mp.serviceId: myprovider
+    mp.path: /mp/**
+  # 对指定的服务禁用服务路由自动配置,如果需要禁用所有可使用 "*" (需要带引号)
+  ignored-services: myprovider

@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<!--为了解决直接进行加载导致的css样式泄露到外层html的问题-->
+<!--新建一个页面，在panel中加载这个页面，对md文档的css将在此处加载，防止泄露到外层-->
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>预览</title>
+</head>
+<body id="body">
+<iframe th:src="@{look2.do?filePath={filePath}(filePath=${filePath})}"
+        frameborder="no" border="0"
+        marginwidth="0"
+        marginheight="0"
+        scrolling="yes"
+        allowtransparency="yes"
+        style="width: 100%;height: 100%"
+>
+
+</iframe>
+</body>
+</html>

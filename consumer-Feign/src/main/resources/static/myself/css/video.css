@@ -1,0 +1,30 @@
+@charset "UTF-8";
+#head_video{
+    background-color: black;
+}
+#up_ico,#down_ico{
+    font-size: 1.6em;
+}
+body{
+    background: linear-gradient(lawngreen,white,lawngreen);
+    height: 100%;
+    font-size: large;
+}
+#html{
+    padding-left: 0px;
+    border: 4px solid black;
+    background-color: #00ff00;
+}
+#li_first_video{
+    color: yellow;
+    font-weight: bolder;
+    font-family: "微软雅黑";
+}
+#ul_video{
+    padding-left: 0px;
+    border: 4px solid black;
+    background-color: #00ff00;
+}
+li{
+    list-style: none;
+}
