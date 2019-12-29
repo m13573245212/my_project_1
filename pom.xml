@@ -5,15 +5,13 @@
 
     <groupId>cn.XLF</groupId>
     <artifactId>demo_springboot</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>0.0.1</version>
     <packaging>pom</packaging>
 
     <modules>
         <module>api</module>
         <module>consumer-Feign</module>
-        <module>provider-8081</module>
-<!--        <module>provider-8082</module>-->
-<!--        <module>provider-8083</module>-->
+        <module>provider-8082</module>
         <module>eureka-7001</module>
         <module>eureka-7002</module>
         <module>eureka-7003</module>
@@ -21,6 +19,9 @@
         <module>zuul-9527</module>
         <module>spring_cloud_config-3344</module>
         <module>spring_cloud_config_client-3355</module>
+        <module>spring_cloud_config_client-3366</module>
+        <module>my_reflect</module>
+        <module>my_urule_pro</module>
     </modules>
 
     <name>demo_springboot</name>
@@ -106,6 +107,31 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
+
+    <repositories>
+        <repository>
+            <id>nexus</id>
+            <url>http://localhost:8081/repository/maven-public/</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
+    <distributionManagement>
+        <repository>
+            <id>nexus-releases</id>
+            <name>Nexus Release Repository</name>
+            <url>http://localhost:8081/repository/maven-releases/</url>
+        </repository>
+        <snapshotRepository>
+            <id>nexus-snapshots</id>
+            <name>Nexus Snapshot Repository</name>
+            <url>http://localhost:8081/repository/maven-snapshots/</url>
+        </snapshotRepository>
+    </distributionManagement>
     <build>
         <finalName>demo_springboot</finalName>
         <resources>

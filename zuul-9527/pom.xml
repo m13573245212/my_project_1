@@ -5,11 +5,11 @@
     <parent>
         <groupId>cn.XLF</groupId>
         <artifactId>demo_springboot</artifactId>
-        <version>0.0.1-SNAPSHOT</version>
+        <version>0.0.1</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
     <artifactId>zuul-9527</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>0.0.1</version>
     <name>zuul-9527</name>
     <description>Zuul 路由网关</description>
 
