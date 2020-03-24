@@ -21,7 +21,8 @@
         <module>spring_cloud_config_client-3355</module>
         <module>spring_cloud_config_client-3366</module>
         <module>my_reflect</module>
-        <module>my_urule_pro</module>
+        <module>my_urule_pro_9000</module>
+        <module>workflow</module>
     </modules>
 
     <name>demo_springboot</name>
@@ -42,12 +43,17 @@
         <zkclient.version>0.1</zkclient.version>
         <junit.version>4.12</junit.version>
         <log4j.version></log4j.version>
-        <lombok.version>1.16.18</lombok.version>
+        <lombok.version>1.18.10</lombok.version>
     </properties>
 
     <dependencyManagement>   <!--dependencyManagement用于管理依赖版本号-->
         <dependencies>
             <!--actuator监控信息完善-->
+            <dependency>
+                <groupId>org.projectlombok</groupId>
+                <artifactId>lombok</artifactId>
+                <version>${lombok.version}</version>
+            </dependency>
             <dependency>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-starter-actuator</artifactId>

@@ -8,9 +8,9 @@
         <version>0.0.1</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
-    <artifactId>my_urule_pro</artifactId>
+    <artifactId>my_urule_pro_9000</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>my_urule_pro</name>
+    <name>my_urule_pro_9000</name>
     <description>使用urule_pro规则引擎</description>
 
     <properties>
@@ -18,11 +18,50 @@
     </properties>
 
     <dependencies>
+        <!--actuator监控信息完善-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
+        <!--将provider注册到Eureka需要的jar-->
+        <!--SpringCloud的Eureka的客户端-->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-eureka</artifactId>
+            <version>1.4.5.RELEASE</version>
+        </dependency>
+        <!--SpringCloud的配置-->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-config</artifactId>
+            <version>2.0.1.RELEASE</version>
+        </dependency>
         <!--引入urule-pro-->
         <dependency>
             <groupId>com.bstek.urule</groupId>
             <artifactId>urule-console-pro</artifactId>
             <version>2.2.3</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-log4j12</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <!--数据库连接配置-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-jdbc</artifactId>
+        </dependency>
+        <!-- mybatis plus 插件 -->
+        <dependency>
+            <groupId>com.baomidou</groupId>
+            <artifactId>mybatis-plus-boot-starter</artifactId>
+            <version>2.3</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
